@@ -5,6 +5,8 @@ using System.Text.Encodings.Web;
 namespace New.Controllers;
 
 public class LoginController : Controller {
+    
+
     public ActionResult Index(){
         return View();
     }
@@ -20,6 +22,7 @@ public class LoginController : Controller {
             if(isAuthenticated){
                 return RedirectToAction("Index", "Home");
             }
+            
             else{
                 ModelState.AddModelError("", "2 Tên đăng nhập hoặc mật khẩu không đúng!");
                 Console.WriteLine("2 Tên đăng nhập hoặc mật khẩu không đúng!");
