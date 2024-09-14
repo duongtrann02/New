@@ -37,7 +37,7 @@ public class FirebaseController : Controller {
         ConnectToFirebase();
         var data = account;
         PushResponse response = client.Push("Account/", data);
-        data.Id = int.Parse(response.Result.name);
+        // data.Id = response.Result.name;
         SetResponse setResponse = client.Set("Account/"+data.Id,data);
     }
 }

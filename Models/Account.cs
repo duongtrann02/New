@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace New.Models;
 
 public class Account{
-    public int Id {get; set;}
+    public string Id {get; set;}
     [Required(ErrorMessage = "Ô này không được để trống!")]
     public string UserName {get; set;}
     [Required(ErrorMessage = "Ô này không được để trống!")]
