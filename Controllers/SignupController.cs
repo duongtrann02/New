@@ -7,6 +7,9 @@ using FireSharp.Response;
 using Microsoft.CodeAnalysis.Elfie.Model.Map;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Web;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace New.Controllers;
 
@@ -40,18 +43,10 @@ public class SignupController : Controller
             ModelState.AddModelError("", "Đã xảy ra lỗi trong quá trình đăng ký!");
             Console.WriteLine(ex.Message);
         }
-        var data = new Account
-        {
-            UserName = "",
-            PassWord = "",
-            AccountName = "",
-            Gender = ""
-
-        };
         return View();
     }
 
-    private void CreateNewAccount(Account account)
+    private async void CreateNewAccount(Account account)
     {
         client = new FireSharp.FirebaseClient(config);
         if (client == null)
@@ -64,26 +59,37 @@ public class SignupController : Controller
             Console.WriteLine("Connect successfully! createnewaccount");
         }
         var data = account;
-        bool m = true;
-        findData(data.UserName, m);
-        Console.WriteLine(m + "");
-        if (m == false)
-        {
-            Console.WriteLine("email nay da co nguoi su dung");
-            TempData["SuccessMessage"] = "email nay da co nguoi su dung!";
-        }
-        else
+        // data.PassWord = HashPassword(data.PassWord);
+        bool emailExists = await CheckIfEmailExists(data.UserName);
+
+        if (!emailExists && data.UserName.EndsWith("@gmail.com") && data.PassWord.Length>=8 && data.PassWord.Length<=32)
         {
             PushResponse response = client.Push("Account/", data);
             data.Id = response.Result.name;
             SetResponse setResponse = client.Set("Account/" + data.Id, data);
             Console.WriteLine("email " + data.UserName + " created!");
         }
+        else
+        {
+            if(emailExists){
+                Console.WriteLine("email da ton tai");
+                TempData["SuccessMessage"] = "email da ton tai";
+            }
+            if(!data.UserName.EndsWith("@gmail.com")){
+                Console.WriteLine("email khong dung dinh dang");
+                TempData["SuccessMessage"] = "email khong dung dinh dang";
+            }
+            if(data.PassWord.Length<8 || data.PassWord.Length>32){
+                Console.WriteLine("mat khau chi duoc tu 8 den 32 ki tu");
+                TempData["SuccessMessage"] = "mat khau chi duoc tu 8 den 32 ki tu";
+            }
+            
+        }
 
 
     }
 
-    private async void findData(string n, bool m)
+    private async Task<bool> CheckIfEmailExists(string email)
     {
 
         client = new FireSharp.FirebaseClient(config);
@@ -104,27 +110,26 @@ public class SignupController : Controller
 
             if (data != null)
             {
-                foreach (var item in data)
+                foreach (var item in data.Values)
                 {
-                    var username = $"{item.Value.UserName}";
-                    Console.WriteLine(username + " f");
-                    if (username == n)
-                    {
-                        m = false;
+                    if(item.UserName == email){
+                        return true;
                     }
                 }
-
             }
-            else
+        }
+        return false;
+    }
+    public string HashPassword(string password){
+        using (var sha256 = SHA256.Create()){
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
+            StringBuilder hashedPassword = new StringBuilder();
+            foreach (byte b in hashedBytes)
             {
-                Console.WriteLine("khong tim thay du lieu");
+                hashedPassword.Append(b.ToString("x2"));
             }
+            return hashedPassword.ToString();
         }
-        else
-        {
-            Console.WriteLine("co loi xay ra khi tim du lieu tren firebase");
-        }
-
-
     }
 }
