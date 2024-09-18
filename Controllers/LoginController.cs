@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace New.Controllers;
 
-public class LoginController : Controller {
-    
+public class LoginController : Controller
+{
+
     IFirebaseConfig config = new FirebaseConfig
     {
         AuthSecret = "KARqhj67OD1LyTPzMorJuggVRW86I6SdM5tCU8bi",
@@ -19,42 +20,55 @@ public class LoginController : Controller {
     IFirebaseClient client;
 
 
-    public ActionResult Index(){
+    public ActionResult Index()
+    {
         return View();
     }
 
     [HttpPost]
-    public async Task<ActionResult> Index(Account account){
-        try{
+    public async Task<ActionResult> Index(Account account)
+    {
+        try
+        {
             string username = account.UserName;
             string password = account.PassWord;
             client = new FireSharp.FirebaseClient(config);
-            if(client == null){
+            if (client == null)
+            {
                 Console.WriteLine("Khong ket noi duoc voi firebase!");
                 return View();
             }
-            else{
+            else
+            {
                 Console.WriteLine("Ket noi thanh cong toi firebase!");
             }
             FirebaseResponse response = await client.GetAsync("Account");
             var users = response.ResultAs<Dictionary<string, dynamic>>();
-            if(users == null){
+            if (users == null)
+            {
                 Console.WriteLine("Khong tim thay nguoi dung!");
                 return View();
             }
             var user = users.FirstOrDefault(u => u.Value.UserName == username);
-            if(user.Value!=null){
-                if(user.Value.PassWord == password){
+            if (user.Value != null)
+            {
+                if (user.Value.PassWord == password)
+                {
                     Console.WriteLine("Dang nhap thanh cong!");
-                    return RedirectToAction("Index","Home");
-                }else{
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
                     Console.WriteLine("Mat khau khong dung!");
                 }
             }
-            else{
+            else
+            {
                 Console.WriteLine("Email khong ton tai!");
             }
-        }catch(Exception ex){
+        }
+        catch (Exception ex)
+        {
             ModelState.AddModelError("", "Đã xảy ra lỗi trong quá trình đăng nhập!");
             Console.WriteLine(ex.Message);
         }

@@ -27,15 +27,36 @@ public class SignupController : Controller
         return View();
     }
     [HttpPost]
-    public ActionResult Index(Account account)
+    public async Task<ActionResult> Index(Account account)
     {
         try
         {
-            CreateNewAccount(account);
-            if (ModelState.IsValid)
+            client = new FireSharp.FirebaseClient(config);
+            if (client == null)
             {
-                TempData["SuccessMessage"] = "Đăng ký thành công!";
+                Console.WriteLine("Cannot connect to Firebase! createnewaccount");
+                return View();
+            }
+            else
+            {
+                Console.WriteLine("Connect successfully! createnewaccount");
+            }
+            var data = account;
+            bool checkAccount = await CheckAccountLegit(data);
+
+            if (checkAccount)
+            {
+                PushResponse response = client.Push("Account/", data);
+                data.Id = response.Result.name;
+                SetResponse setResponse = client.Set("Account/" + data.Id, data);
+                Console.WriteLine("email " + data.UserName + " created!");
                 return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                Console.WriteLine("Dang ky that bai!");
+                TempData["SuccessMessage"] = "Dang ky that bai!";
+                return View();
             }
         }
         catch (Exception ex)
@@ -46,47 +67,17 @@ public class SignupController : Controller
         return View();
     }
 
-    private async void CreateNewAccount(Account account)
-    {
-        client = new FireSharp.FirebaseClient(config);
-        if (client == null)
-        {
-            Console.WriteLine("Cannot connect to Firebase! createnewaccount");
-            return;
-        }
-        else
-        {
-            Console.WriteLine("Connect successfully! createnewaccount");
-        }
-        var data = account;
-        // data.PassWord = HashPassword(data.PassWord);
-        bool emailExists = await CheckIfEmailExists(data.UserName);
-
-        if (!emailExists && data.UserName.EndsWith("@gmail.com") && data.PassWord.Length>=8 && data.PassWord.Length<=32)
-        {
-            PushResponse response = client.Push("Account/", data);
-            data.Id = response.Result.name;
-            SetResponse setResponse = client.Set("Account/" + data.Id, data);
-            Console.WriteLine("email " + data.UserName + " created!");
-        }
-        else
-        {
-            if(emailExists){
-                Console.WriteLine("email da ton tai");
-                TempData["SuccessMessage"] = "email da ton tai";
-            }
-            if(!data.UserName.EndsWith("@gmail.com")){
-                Console.WriteLine("email khong dung dinh dang");
-                TempData["SuccessMessage"] = "email khong dung dinh dang";
-            }
-            if(data.PassWord.Length<8 || data.PassWord.Length>32){
-                Console.WriteLine("mat khau chi duoc tu 8 den 32 ki tu");
-                TempData["SuccessMessage"] = "mat khau chi duoc tu 8 den 32 ki tu";
-            }
-            
-        }
-
-
+    private async Task<bool> CheckAccountLegit(Account account){
+        bool emailExists = await CheckIfEmailExists(account.UserName);
+        if(account.UserName.EndsWith("@gmail.com")){
+            if(!emailExists){
+                if(account.PassWord.Length>=8 && account.PassWord.Length<=32){
+                    Console.WriteLine("Account leggit!");
+                    return true;
+                } else Console.WriteLine("Password loi!");
+            } else Console.WriteLine("Email da ton tai!");
+        } else Console.WriteLine("Email loi dinh dang!");
+        return false;
     }
 
     private async Task<bool> CheckIfEmailExists(string email)
@@ -112,7 +103,8 @@ public class SignupController : Controller
             {
                 foreach (var item in data.Values)
                 {
-                    if(item.UserName == email){
+                    if (item.UserName == email)
+                    {
                         return true;
                     }
                 }
@@ -120,8 +112,10 @@ public class SignupController : Controller
         }
         return false;
     }
-    public string HashPassword(string password){
-        using (var sha256 = SHA256.Create()){
+    public string HashPassword(string password)
+    {
+        using (var sha256 = SHA256.Create())
+        {
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
             byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
             StringBuilder hashedPassword = new StringBuilder();
