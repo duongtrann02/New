@@ -6,6 +6,7 @@ using FireSharp.Interfaces;
 using FireSharp.Response;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 
 namespace New.Controllers;
 
@@ -55,7 +56,7 @@ public class LoginController : Controller
                 if (user.Value.PassWord == password)
                 {
                     Console.WriteLine("Dang nhap thanh cong!");
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Newsfeed");
                 }
                 else
                 {

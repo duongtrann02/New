@@ -50,7 +50,7 @@ public class SignupController : Controller
                 data.Id = response.Result.name;
                 SetResponse setResponse = client.Set("Account/" + data.Id, data);
                 Console.WriteLine("email " + data.UserName + " created!");
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Login");
             }
             else
             {
@@ -67,16 +67,23 @@ public class SignupController : Controller
         return View();
     }
 
-    private async Task<bool> CheckAccountLegit(Account account){
+    private async Task<bool> CheckAccountLegit(Account account)
+    {
         bool emailExists = await CheckIfEmailExists(account.UserName);
-        if(account.UserName.EndsWith("@gmail.com")){
-            if(!emailExists){
-                if(account.PassWord.Length>=8 && account.PassWord.Length<=32){
+        if (account.UserName.EndsWith("@gmail.com"))
+        {
+            if (!emailExists)
+            {
+                if (account.PassWord.Length >= 8 && account.PassWord.Length <= 32)
+                {
                     Console.WriteLine("Account leggit!");
                     return true;
-                } else Console.WriteLine("Password loi!");
-            } else Console.WriteLine("Email da ton tai!");
-        } else Console.WriteLine("Email loi dinh dang!");
+                }
+                else Console.WriteLine("Password loi!");
+            }
+            else Console.WriteLine("Email da ton tai!");
+        }
+        else Console.WriteLine("Email loi dinh dang!");
         return false;
     }
 
@@ -87,7 +94,6 @@ public class SignupController : Controller
         if (client == null)
         {
             Console.WriteLine("Cannot connect to Firebase! countid");
-
         }
         else
         {

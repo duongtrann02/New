@@ -1,0 +1,31 @@
+@model IEnumerable<Post>
+
+@{
+    ViewBag.Title = "Newsfeed";
+}
+
+<h2>Newsfeed</h2>
+<form action="/Newsfeed/CreatePost" method="post">
+    <div class="form-group">
+        <label for="content">Content</label>
+        <textarea name="Content" id="content" class="form-control" rows="4" placeholder="What's on your mind?" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Post</button>
+</form>
+
+<hr />
+
+@foreach (var post in Model)
+{
+    <div class="post-container" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+        <h4>@post.Author</h4>
+        <p>@post.Content</p>
+        <small>Posted on: @post.PostedDate.ToString("MMMM dd, yyyy HH:mm")</small>
+        
+        <div class="post-actions" style="margin-top: 10px;">
+            <span>Likes: @post.Likes</span> |
+            <span>Shares: @post.Shares</span>
+        </div>
+    </div>
+}
