@@ -8,31 +8,27 @@ using FireSharp.Response;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using New.Controllers;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using New.Services;
+
+namespace New.Controllers;
 
 public class NewsfeedController : Controller
 {
-    IFirebaseConfig config = new FirebaseConfig
-    {
-        AuthSecret = "KARqhj67OD1LyTPzMorJuggVRW86I6SdM5tCU8bi",
-        BasePath = "https://social-media-e8da3-default-rtdb.firebaseio.com/"
-    };
-    IFirebaseClient client;
+    private FirebaseService firebaseService = new FirebaseService();
+
+
+
     private static List<Post> posts = new List<Post> { };
 
-    [HttpGet]
     public async Task<ActionResult> Index()
     {
-        client = new FireSharp.FirebaseClient(config);
-        if (client == null)
-        {
-            Console.WriteLine("Khong ket noi duoc toi firebase getpost");
+        // var newsDict = await _firebaseService.GetAllPost();
+        // var postList = newsDict.Select(p => p.Value).OrderByDescending(n => n.PostedDate).ToList();
+        // return View(newsDict);
+        if(HttpContext.Session.GetString("_username") == null){
+            return RedirectToAction("Login", "Account");
         }
-        else
-        {
-            Console.WriteLine("Ket noi thanh cong toi firebase getpost");
-        }
-        FirebaseResponse response = await client.GetAsync("Post");
-        var getPosts = response.ResultAs<Dictionary<string, dynamic>>();
+        var getPosts = await firebaseService.GetAllPost();
         if (getPosts == null)
         {
             Console.WriteLine("Khong tim thay bai viet nao!");
@@ -57,66 +53,158 @@ public class NewsfeedController : Controller
         return View(posts);
     }
 
-    [HttpPost]
-    public async Task<ActionResult> CreatePost(string Author, string Content)
+    public ActionResult CreatePost()
     {
-        client = new FireSharp.FirebaseClient(config);
-        if (client == null)
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> CreatePost(Post newPost)
+    {
+        var _post = new Post
         {
-            Console.WriteLine("Khong ket noi duoc toi firebase");
-            return View(posts);
-        }
-        else
-        {
-            Console.WriteLine("Ket noi thanh cong toi firebase");
-        }
-        FirebaseResponse response = await client.GetAsync("Post");
-        var newPost = new Post
-        {
-            Author = Author,
-            Content = Content,
+            Author = HttpContext.Session.GetString("_username"),
+            Content = newPost.Content,
             PostedDate = DateTime.Now,
             Likes = 0,
             Shares = 0
         };
-        PushResponse response1 = client.Push("Post/", newPost);
-        newPost.Id = response1.Result.name;
-        SetResponse setResponse = client.Set("Post/" + newPost.Id, newPost);
-        Console.WriteLine("ID Post: " + newPost.Id);
-        posts.Add(newPost);
+        await firebaseService.CreatePost($"Post/{newPost.Id}", _post);
+
         return RedirectToAction("Index");
     }
 
-    private async Task GetPost()
+    public async Task<ActionResult> Delete(string id)
     {
-        client = new FireSharp.FirebaseClient(config);
-        if (client == null)
+        if (string.IsNullOrEmpty(id))
         {
-            Console.WriteLine("Khong ket noi duoc toi firebase getpost");
+            return View();
         }
-        else
+        var post = await firebaseService.GetPost(id);
+        if (post == null)
         {
-            Console.WriteLine("Ket noi thanh cong toi firebase getpost");
+            return View(post);
         }
-        FirebaseResponse response = await client.GetAsync("Post");
-        var getPosts = response.ResultAs<Dictionary<string, dynamic>>();
-        if (getPosts == null)
-        {
-            Console.WriteLine("Khong tim thay bai viet nao!");
-            return;
-        }
-        foreach (var post in getPosts)
-        {
-            Post newPost = new Post
-            {
-                Author = post.Value.Author,
-                Content = post.Value.Content,
-                PostedDate = post.Value.PostedDate,
-                Likes = post.Value.Likes,
-                Shares = post.Value.Shares
-            };
-            posts.Add(newPost);
-        }
+        return View(post);
     }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> DeleteConfirmed(string id)
+    {
+        await firebaseService.DeletePost(id);
+        return RedirectToAction("Index");
+    }
+
+    // IFirebaseConfig config = new FirebaseConfig
+    // {
+    //     AuthSecret = "KARqhj67OD1LyTPzMorJuggVRW86I6SdM5tCU8bi",
+    //     BasePath = "https://social-media-e8da3-default-rtdb.firebaseio.com/"
+    // };
+    // IFirebaseClient client;
+    // private static List<Post> posts = new List<Post> { };
+
+    // public const string SessionKeyUsername = AccountController.SessionKeyUsername;
+    // // public const string currentUser = HttpContext.Session.GetString();
+
+    // [HttpGet]
+    // public async Task<ActionResult> Index()
+    // {
+    //     client = new FireSharp.FirebaseClient(config);
+    //     if (client == null)
+    //     {
+    //         Console.WriteLine("Khong ket noi duoc toi firebase getpost");
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Ket noi thanh cong toi firebase getpost");
+    //     }
+    //     FirebaseResponse response = await client.GetAsync("Post");
+    //     var getPosts = response.ResultAs<Dictionary<string, dynamic>>();
+    //     if (getPosts == null)
+    //     {
+    //         Console.WriteLine("Khong tim thay bai viet nao!");
+    //     }
+    //     else
+    //     {
+    //         posts.Clear();
+    //         foreach (var post in getPosts)
+    //         {
+    //             Post newPost = new Post
+    //             {
+    //                 Author = post.Value.Author,
+    //                 Content = post.Value.Content,
+    //                 PostedDate = post.Value.PostedDate,
+    //                 Likes = post.Value.Likes,
+    //                 Shares = post.Value.Shares
+    //             };
+
+    //             posts.Add(newPost);
+    //         }
+    //     }
+    //     return View(posts);
+    // }
+
+    // [HttpPost]
+    // public async Task<ActionResult> CreatePost(string Author, string Content)
+    // {
+    //     client = new FireSharp.FirebaseClient(config);
+    //     if (client == null)
+    //     {
+    //         Console.WriteLine("Khong ket noi duoc toi firebase");
+    //         return View(posts);
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Ket noi thanh cong toi firebase");
+    //     }
+    //     FirebaseResponse response = await client.GetAsync("Post");
+    //     var newPost = new Post
+    //     {
+    //         Author = Author,
+    //         Content = Content,
+    //         PostedDate = DateTime.Now,
+    //         Likes = 0,
+    //         Shares = 0
+    //     };
+    //     PushResponse response1 = client.Push("Post/", newPost);
+    //     newPost.Id = response1.Result.name;
+    //     SetResponse setResponse = client.Set("Post/" + newPost.Id, newPost);
+    //     Console.WriteLine("ID Post: " + newPost.Id);
+    //     posts.Add(newPost);
+    //     return RedirectToAction("Index");
+    // }
+
+    // private async Task GetPost()
+    // {
+    //     client = new FireSharp.FirebaseClient(config);
+    //     if (client == null)
+    //     {
+    //         Console.WriteLine("Khong ket noi duoc toi firebase getpost");
+    //     }
+    //     else
+    //     {
+    //         Console.WriteLine("Ket noi thanh cong toi firebase getpost");
+    //     }
+    //     FirebaseResponse response = await client.GetAsync("Post");
+    //     var getPosts = response.ResultAs<Dictionary<string, dynamic>>();
+    //     if (getPosts == null)
+    //     {
+    //         Console.WriteLine("Khong tim thay bai viet nao!");
+    //         return;
+    //     }
+    //     foreach (var post in getPosts)
+    //     {
+    //         Post newPost = new Post
+    //         {
+    //             Author = post.Value.Author,
+    //             Content = post.Value.Content,
+    //             PostedDate = post.Value.PostedDate,
+    //             Likes = post.Value.Likes,
+    //             Shares = post.Value.Shares
+    //         };
+    //         posts.Add(newPost);
+    //     }
+    // }
 
 }

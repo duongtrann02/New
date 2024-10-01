@@ -16,7 +16,7 @@ public class Post{
     }
     public Post(){
         Id = Guid.NewGuid().ToString();
-        Author = this.Author;
+        Author = "a";
         PostedDate = DateTime.Now;
         Likes = 0;
         Shares = 0;
