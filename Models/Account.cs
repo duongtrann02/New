@@ -17,5 +17,6 @@ public class Account{
     [DataType(DataType.Date)]
     public DateTime DateOfBirth {get; set;}
     public string Gender {get; set;}
-    public string bio {get; set;}
+    public string Bio {get; set;}
+    public string Avatar {get; set;}
 }

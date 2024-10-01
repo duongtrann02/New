@@ -26,14 +26,17 @@ public class AccountController : Controller
         _logger = logger;
     }
 
-    public void SetSession(string username)
+    public void SetSession(string username, string id)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("_username")))
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("_username")) || string.IsNullOrEmpty(HttpContext.Session.GetString("_userId")))
         {
             HttpContext.Session.SetString("_username", username);
+            HttpContext.Session.SetString("_userId", id);
         }
         var _username = HttpContext.Session.GetString("_username");
-        _logger.LogInformation("Session User: {User} " + username);
+        var _userId = HttpContext.Session.GetString("_userId");
+        _logger.LogInformation("Session User: {User} " + _username);
+        _logger.LogInformation("Session UserId: {User} " + _userId);
     }
 
     [HttpGet]
@@ -52,7 +55,7 @@ public class AccountController : Controller
             var user = userEntry.Value.Value;
             if (password == user.PassWord)
             {
-                SetSession(username);
+                SetSession(user.UserName, user.Id);
                 return RedirectToAction("Index", "Newsfeed");
             }
         }
@@ -84,7 +87,10 @@ public class AccountController : Controller
         string userId = Guid.NewGuid().ToString();
         Console.WriteLine("user: " + userId);
         newAccount.Id = userId;
+        newAccount.Bio = "Nothing here!";
         await firebaseService.SetData($"Account/{userId}", newAccount);
+        HttpContext.Session.SetString("_username", newAccount.UserName);
+        HttpContext.Session.SetString("_userId", userId);
         return RedirectToAction("Index", "Newsfeed");
     }
 

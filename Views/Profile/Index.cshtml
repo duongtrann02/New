@@ -1,0 +1,66 @@
+@model New.Models.ProfileViewModel
+
+@{
+    ViewBag.Title = "Trang Cá Nhân";
+}
+
+<h2>Trang Cá Nhân</h2>
+
+<!-- Hiển thị thông báo thành công hoặc lỗi từ TempData -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="profile-container" style="border: 1px solid #ccc; padding: 20px; border-radius: 5px;">
+    <div class="profile-picture" style="text-align: center;">
+        @if (!string.IsNullOrEmpty(Model.Account.Avatar))
+        {
+            <img src="@Model.Account.Avatar" alt="Profile Picture" style="width:150px; height:150px; border-radius: 50%;" />
+        }
+        else
+        {
+            <img src="~/Content/Images/default-profile.png" alt="Default Profile Picture" style="width:150px; height:150px; border-radius: 50%;" />
+        }
+    </div>
+
+    <h3 style="text-align: center; margin-top: 10px;">@Model.Account.AccountName</h3>
+    <p style="text-align: center;">@Model.Account.Bio</p>
+
+    <hr />
+    <hr />
+
+    <div class="profile-actions" style="text-align: center;">
+        <a href="@Url.Action("Edit", "Profile")" class="btn btn-primary">Chỉnh sửa thông tin</a>
+    </div>
+</div>
+
+<hr />
+
+<h3>Bài Viết Của Tôi</h3>
+
+@if (Model.Posts != null && Model.Posts.Any())
+{
+    foreach (var post in Model.Posts)
+    {
+        <div class="post-container" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+            <h4>@post.Author</h4>
+            <p>@post.Content</p>
+            <small>Đăng ngày: @post.PostedDate.ToString("dd MMM yyyy HH:mm")</small>
+            <!-- Thêm các hành động như chỉnh sửa, xóa nếu cần -->
+        </div>
+    }
+}
+else
+{
+    <p>Bạn chưa có bài viết nào.</p>
+}
