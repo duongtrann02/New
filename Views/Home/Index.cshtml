@@ -1,0 +1,27 @@
+﻿@model IEnumerable<New_Project.Models.Post>
+
+@{
+    ViewData["Title"] = "Trang Chủ";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a class="nav-link" asp-controller="Post" asp-action="Create">Thêm Bài Viết</a>
+
+@if (Model.Any())
+{
+    <div class="list-group">
+        @foreach (var post in Model)
+        {
+            <a href="#" class="list-group-item list-group-item-action">
+                <h5 class="mb-1">@post.Title</h5>
+                <small>@post.Author - @post.PostedDate.ToString("dd/MM/yyyy HH:mm")</small>
+                <p class="mb-1">@post.Content</p>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <p>Không có bài viết nào.</p>
+}
