@@ -30,11 +30,13 @@ namespace New_Project.Controllers
                 Id = Guid.NewGuid().ToString(),
                 Title = model.Title,
                 Content = model.Content,
-                Author = HttpContext.Session.GetString("UserId")
+                Author = User.Identity.Name,
+                PostedDate = DateTime.Now
             };
             await _firebaseService.AddPostAsync(post);
 
             return RedirectToAction("Index", "Home");
         }
+        
     }
 }

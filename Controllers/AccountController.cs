@@ -61,7 +61,7 @@ namespace New_Project.Controllers
                     Password = hashedPassword,
                     FullName = model.FullName,
                     Bio = model.Bio,
-                    ProfilePictureUrl = model.ProfilePictureUrl
+                    // ProfilePictureUrl = model.ProfilePictureUrl
                 };
 
                 await _firebaseService.SetDataAsync($"users/{userId}", newUser);

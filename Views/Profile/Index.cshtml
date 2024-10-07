@@ -22,14 +22,14 @@
 
 <div class="profile-container" style="border: 1px solid #ccc; padding: 20px; border-radius: 5px;">
     <div class="profile-picture" style="text-align: center;">
-        @if (!string.IsNullOrEmpty(Model.User.ProfilePictureUrl))
+        @* @if (!string.IsNullOrEmpty(Model.User.ProfilePictureUrl))
         {
             <img src="@Model.User.ProfilePictureUrl" alt="Profile Picture" style="width:150px; height:150px; border-radius: 50%;" />
         }
         else
-        {
+        { *@
             <img src="~/Content/images/default-profile.png" alt="Default Profile Picture" style="width:150px; height:150px; border-radius: 50%;" />
-        }
+        @* } *@
     </div>
 
     <h3 style="text-align: center; margin-top: 10px;">@Model.User.FullName</h3>

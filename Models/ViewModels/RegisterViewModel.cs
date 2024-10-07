@@ -30,10 +30,10 @@ namespace New_Project.Models.ViewModels
         [Display(Name = "Bio")]
         public string Bio { get; set; }
 
-        [Display(Name = "Hình Ảnh Cá Nhân URL")]
-        [Url(ErrorMessage = "URL hình ảnh không hợp lệ")]
-        [RegularExpression(@"^https?:\/\/.*\.(jpg|jpeg|png|gif|bmp|svg)$", 
-            ErrorMessage = "URL phải trỏ đến một hình ảnh hợp lệ (jpg, jpeg, png, gif, bmp, svg)")]
-        public string ProfilePictureUrl { get; set; }
+        // [Display(Name = "Hình Ảnh Cá Nhân URL")]
+        // [Url(ErrorMessage = "URL hình ảnh không hợp lệ")]
+        // [RegularExpression(@"^https?:\/\/.*\.(jpg|jpeg|png|gif|bmp|svg)$", 
+        //     ErrorMessage = "URL phải trỏ đến một hình ảnh hợp lệ (jpg, jpeg, png, gif, bmp, svg)")]
+        // public string ProfilePictureUrl { get; set; }
     }
 }

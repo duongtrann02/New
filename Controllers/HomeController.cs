@@ -20,7 +20,7 @@ namespace New_Project.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var posts = await _firebaseService.GetDataAsync<Dictionary<string, Post>>("posts");
+            var posts = await _firebaseService.GetDataAsync<Dictionary<string, Post>>("Posts");
 
             var sortedPosts = posts != null 
                 ? new SortedDictionary<string, Post>(posts) 

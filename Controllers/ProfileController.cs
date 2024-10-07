@@ -34,7 +34,7 @@ namespace New_Project.Controllers
 
             var user = userEntry.Value.Value;
 
-            var postsDict = await _firebaseService.GetDataAsync<Dictionary<string, Post>>("posts");
+            var postsDict = await _firebaseService.GetDataAsync<Dictionary<string, Post>>("Posts");
             List<Post> userPosts = new List<Post>();
 
             if (postsDict != null)
@@ -85,27 +85,22 @@ namespace New_Project.Controllers
 
             var user = userEntry.Value.Value;
 
-            if (ModelState.IsValid)
+            user.FullName = updatedUser.FullName;
+            user.Bio = updatedUser.Bio;
+
+            if (ProfilePicture != null && ProfilePicture.Length > 0)
             {
-                user.FullName = updatedUser.FullName;
-                user.Bio = updatedUser.Bio;
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ProfilePicture.FileName);
 
-                if (ProfilePicture != null && ProfilePicture.Length > 0)
-                {
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ProfilePicture.FileName);
+                var imageUrl = await UploadProfilePictureAsync(ProfilePicture, fileName);
 
-                    var imageUrl = await UploadProfilePictureAsync(ProfilePicture, fileName);
-
-                    user.ProfilePictureUrl = imageUrl;
-                }
-
-                await _firebaseService.SetDataAsync($"users/{user.Id}", user);
-
-                TempData["Success"] = "Cập nhật thông tin cá nhân thành công.";
-                return RedirectToAction("Index");
+                // user.ProfilePictureUrl = imageUrl;
             }
 
-            return View(updatedUser);
+            await _firebaseService.SetDataAsync($"users/{user.Id}", user);
+
+            TempData["Success"] = "Cập nhật thông tin cá nhân thành công.";
+            return RedirectToAction("Index");
         }
 
         private async Task<string> UploadProfilePictureAsync(IFormFile file, string fileName)

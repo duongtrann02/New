@@ -38,3 +38,4 @@ C:\Users\duong\OneDrive\Máy tính\asp.net mvc\New-Project\obj\Debug\net8.0\refi
 C:\Users\duong\OneDrive\Máy tính\asp.net mvc\New-Project\obj\Debug\net8.0\New-Project.pdb
 C:\Users\duong\OneDrive\Máy tính\asp.net mvc\New-Project\obj\Debug\net8.0\New-Project.genruntimeconfig.cache
 C:\Users\duong\OneDrive\Máy tính\asp.net mvc\New-Project\obj\Debug\net8.0\ref\New-Project.dll
+C:\Users\duong\OneDrive\Máy tính\asp.net mvc\New-Project\obj\Debug\net8.0\New-Project.sourcelink.json

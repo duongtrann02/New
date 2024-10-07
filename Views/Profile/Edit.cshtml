@@ -17,12 +17,12 @@
         @Html.LabelFor(m => m.Bio)
         @Html.TextAreaFor(m => m.Bio, new { @class = "form-control", placeholder = "Bio của bạn", rows = 3 })
         @Html.ValidationMessageFor(m => m.Bio, "", new { @class = "text-danger" })
-    </div>
+    @* </div>
     <div class="form-group">
         @Html.LabelFor(m => m.ProfilePictureUrl, "URL Hình Ảnh Cá Nhân")
         @Html.TextBoxFor(m => m.ProfilePictureUrl, new { @class = "form-control", placeholder = "Nhập URL Hình Ảnh" })
         @Html.ValidationMessageFor(m => m.ProfilePictureUrl, "", new { @class = "text-danger" })
-    </div>
+    </div> *@
     <button type="submit" class="btn btn-success">Lưu Thay Đổi</button>
     <a href="@Url.Action("Index", "Profile")" class="btn btn-secondary">Hủy</a>
 </form>
