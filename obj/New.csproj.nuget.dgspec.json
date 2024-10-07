@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New\\New.csproj": {}
+    "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New-Project\\New.csproj": {}
   },
   "projects": {
-    "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New\\New.csproj": {
+    "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New-Project\\New.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New\\New.csproj",
+        "projectUniqueName": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New-Project\\New.csproj",
         "projectName": "New",
-        "projectPath": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New\\New.csproj",
+        "projectPath": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New-Project\\New.csproj",
         "packagesPath": "C:\\Users\\duong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New\\obj\\",
+        "outputPath": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New-Project\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\duong\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZO6sakprgJM=",
+  "dgSpecHash": "0I+iK78Zzfc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New\\New.csproj",
+  "projectFilePath": "C:\\Users\\duong\\OneDrive\\Máy tính\\asp.net mvc\\New-Project\\New.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\duong\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\duong\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
